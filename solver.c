@@ -167,9 +167,9 @@ int main(int argc, char * argv[]) {
 	/* We have found a working set. */
 	for (uint64_t i = 0; i < variables; ++i) {
 		if (checkbit(i)) {
-			printf("%d", i + 1);
+			printf("%ld", i + 1);
 		} else {
-			printf("-%d", i + 1);
+			printf("-%ld", i + 1);
 		}
 		if (i != variables - 1) {
 			printf(" ");
