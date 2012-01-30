@@ -19,6 +19,8 @@ uint64_t variables  = 0;
 uint64_t clause_n   = 0;
 uint64_t collected  = 0;
 
+#define DEBUG 0
+
 list_t ** clauses;
 
 uint8_t checkbit(uint64_t bit) {
@@ -111,6 +113,9 @@ int read_line() {
 				clause_n = atoi(num);
 				clauses  = malloc(sizeof(list_t *) * clause_n);
 				setup_bitsets();
+#if DEBUG
+				fprintf(stderr, "%ld variables, %ld clauses\n", variables, clause_n);
+#endif
 			}
 			break;
 		default:
@@ -123,7 +128,13 @@ int read_line() {
 				clauses[collected] = list_create();
 				char * line = malloc(LINE_WIDTH);
 				fgets(line, LINE_WIDTH - 1, stdin);
-				line[strlen(line) - 1] = '\0';
+				if (line[strlen(line) - 1] == '\n') {
+					line[strlen(line) - 1] = '\0';
+				}
+
+#if DEBUG
+				fprintf(stderr, "Preparing to add clause %ld: %s\n", collected, line);
+#endif
 
 				char *p, *last;
 				for ((p = strtok_r(line, " ", &last)); ;
@@ -134,6 +145,10 @@ int read_line() {
 					list_insert(clauses[collected], (void *)x);
 				}
 				free(line);
+
+#if DEBUG
+				fprintf(stderr, "Added clause.\n");
+#endif
 
 				collected++;
 				if (collected == clause_n) return 0;
