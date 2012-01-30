@@ -23,8 +23,7 @@ uint64_t collected  = 0;
 
 list_t ** clauses;
 
-uint8_t checkbit(uint64_t bit) {
-	assert(bit < BITS_IN_SET * bit_sets_n && "Attempted to check an entirely invalid bit!");
+inline uint8_t checkbit(uint64_t bit) {
 	uint64_t set_id = bit / BITS_IN_SET;
 	uint8_t offset = bit - set_id * BITS_IN_SET;
 	uint8_t tmp = ((bit_sets[set_id] & (1 << offset)) > 0);
@@ -36,15 +35,17 @@ uint8_t checkbit(uint64_t bit) {
 	return tmp;
 }
 
-void setup_bitsets() {
+inline void setup_bitsets() {
 	bit_sets_n = variables / BITS_IN_SET + 1;
 	bit_sets = (uint8_t *)malloc(sizeof(uint64_t) * bit_sets_n);
 }
 
-void next_bitset(uint64_t i) {
-	if (bit_sets[i] == 0xFF) {
+uint64_t unset = 0;
+
+inline void next_bitset(uint64_t i) {
+	if (__builtin_expect(bit_sets[i] == 0xFF, 0)) {
 		bit_sets[i] = 0;
-		if (i + 1 == bit_sets_n) {
+		if (__builtin_expect(i + 1 == bit_sets_n, 0)) {
 			printf("UNSATISFIABLE\n");
 			exit(0);
 		}
@@ -52,7 +53,7 @@ void next_bitset(uint64_t i) {
 	} else {
 		bit_sets[i]++;
 		if (i + 1 == bit_sets_n) {
-			if (bit_sets[i] == (1 << variables)) {
+			if (__builtin_expect(bit_sets[i] == (1 << variables), 0)) {
 				printf("UNSATISFIABLE\n");
 				exit(0);
 			}
@@ -60,7 +61,7 @@ void next_bitset(uint64_t i) {
 	}
 }
 
-uint8_t is_clause_true(uint64_t i) {
+inline uint8_t is_clause_true(uint64_t i) {
 	list_t * clause = clauses[i];
 	uint8_t yes = 0;
 
@@ -75,7 +76,7 @@ uint8_t is_clause_true(uint64_t i) {
 	return yes;
 }
 
-uint8_t solved_with_bitset() {
+inline uint8_t solved_with_bitset() {
 	for (uint64_t i = 0; i < clause_n; ++i) {
 		if (!is_clause_true(i)) {
 			return 0;
