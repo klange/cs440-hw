@@ -19,11 +19,11 @@
 * with the correct arities, by use of a global reference to the list of houses.
 */
 
-/* Required predicates */
-drinks(X,Y) :- b_getval(theHouses, Houses), member(house(X,_,Y,_,_), Houses).
-smokes(X,Y) :- b_getval(theHouses, Houses), member(house(X,_,_,_,Y), Houses).
-owns(X,Y)   :- b_getval(theHouses, Houses), member(house(X,_,_,Y,_), Houses).
-livesIn(X,Y):- b_getval(theHouses, Houses), member(house(X,Y,_,_,_), Houses).
+/* Simple query predicates predicates */
+xdrinks(X,Y) :- b_getval(theHouses, Houses), member(house(X,_,Y,_,_), Houses).
+xsmokes(X,Y) :- b_getval(theHouses, Houses), member(house(X,_,_,_,Y), Houses).
+xowns(X,Y)   :- b_getval(theHouses, Houses), member(house(X,_,_,Y,_), Houses).
+xlivesIn(X,Y):- b_getval(theHouses, Houses), member(house(X,Y,_,_,_), Houses).
 
 /* A house is next to another house if it is right of the other (or vice-versa) */
 nextTo(X, Y, List) :- rightOf(X,Y,List); rightOf(Y,X,List).
@@ -36,10 +36,10 @@ rightOf(Left, Right, [_ | Rest]) :- rightOf(Left, Right, Rest).
 solve(Houses, Who_Owns_The_Zebra, Who_Drinks_Water) :-
 	Houses = [_,_,_,_,_], /* There are five houses */
 	b_setval(theHouses, Houses), /* Sneaky arity hackery */
-	livesIn(englishman,red), /* The Englishman lives in the red house */
-	owns(spaniard,dog), /* The Spaniard owns the dog */
+	xlivesIn(englishman,red), /* The Englishman lives in the red house */
+	xowns(spaniard,dog), /* The Spaniard owns the dog */
 	member(house(_,green,coffee,_,_), Houses), /* Coffee is drunk in the green house */
-	drinks(ukranian,tea), /* The Ukranian drinks tea */
+	xdrinks(ukranian,tea), /* The Ukranian drinks tea */
 	rightOf(house(_,green,_,_,_), house(_,ivory,_,_,_), Houses), /* The green house is right of the ivory house */
 	member(house(_,_,_,snails,old_gold), Houses), /* The Old Gold smoker owns snails */
 	member(house(_,yellow,_,_,kools), Houses), /* The Kools smoker lives in the yellow house */
@@ -48,8 +48,14 @@ solve(Houses, Who_Owns_The_Zebra, Who_Drinks_Water) :-
 	nextTo(house(_,_,_,_,chesterfields),house(_,_,_,fox,_), Houses), /* The man who smokes chesterfields is in the house next to the man who owns a fox */
 	nextTo(house(_,_,_,_,kools),house(_,_,_,horse,_), Houses), /* The man who smokes kools is in the house next to the man who owns a horse */
 	member(house(_,_,orange_juice,_,lucky_strike), Houses), /* The Lucky Strike smoker drinks orange juice */
-	smokes(japanese, parliaments), /* The Japanese smokes parliaments */
+	xsmokes(japanese, parliaments), /* The Japanese smokes parliaments */
 	nextTo(house(norwegian,_,_,_,_), house(_,blue,_,_,_), Houses), /* The Norwegian is next to the blue house */
-	drinks(Who_Drinks_Water,water),  /* Who drinks water? */
-	owns(Who_Owns_The_Zebra,zebra).  /* And who owns the zebra? */
+	xdrinks(Who_Drinks_Water,water),  /* Who drinks water? */
+	xowns(Who_Owns_The_Zebra,zebra).  /* And who owns the zebra? */
+
+/* Actually queriable predicates... */
+drinks(X,Y) :- solve(Houses, _, _), member(house(X,_,Y,_,_), Houses).
+smokes(X,Y) :- solve(Houses, _, _), member(house(X,_,_,_,Y), Houses).
+owns(X,Y)   :- solve(Houses, _, _), member(house(X,_,_,Y,_), Houses).
+livesIn(X,Y):- solve(Houses, _, _), member(house(X,Y,_,_,_), Houses).
 
