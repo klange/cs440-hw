@@ -14,9 +14,6 @@
 * middle house (as opposed to some other location). As such, list operations can be used
 * to show correlations between these locations (such as "the house with the kools is
 * next to the house with the horse", or "the green house is to the right of the ivory house").
-*
-* Additionally, the requested predicates "drinks", "smokes", "owns", and "livesIn" are provided,
-* with the correct arities, by use of a global reference to the list of houses.
 */
 drinks(X,Y) :- solve(Houses), member(house(X,_,Y,_,_), Houses).
 smokes(X,Y) :- solve(Houses), member(house(X,_,_,_,Y), Houses).
@@ -32,7 +29,7 @@ rightOf(Left, Right, [_ | Rest]) :- rightOf(Left, Right, Rest).
 
 /* The problem statement itself */
 solve(Houses) :-
-	Houses = [_,_,_,_,_], /* There are five houses */
+	Houses = [_firstHouse,_,_middleHouse,_,_], /* There are five houses */
 	member(house(englishman,red,_,_,_), Houses), /* The Englishman lives in the red house */
 	member(house(spaniard,_,_,dog,_), Houses), /* The Spaniard owns the dog */
 	member(house(_,green,coffee,_,_), Houses), /* Coffee is drunk in the green house */
@@ -40,8 +37,8 @@ solve(Houses) :-
 	rightOf(house(_,green,_,_,_), house(_,ivory,_,_,_), Houses), /* The green house is right of the ivory house */
 	member(house(_,_,_,snails,old_gold), Houses), /* The Old Gold smoker owns snails */
 	member(house(_,yellow,_,_,kools), Houses), /* The Kools smoker lives in the yellow house */
-	[_,_,house(_,_,milk,_,_),_,_] = Houses, /* Milk is drunk in the middle house */
-	[house(norwegian,_,_,_,_),_,_,_,_] = Houses, /* The Norwegian lives in the first house */
+	house(_,_,milk,_,_) = _middleHouse, /* Milk is drunk in the middle house */
+	house(norwegian,_,_,_,_) = _firstHouse, /* The Norwegian lives in the first house */
 	nextTo(house(_,_,_,_,chesterfields),house(_,_,_,fox,_), Houses), /* The man who smokes chesterfields is in the house next to the man who owns a fox */
 	nextTo(house(_,_,_,_,kools),house(_,_,_,horse,_), Houses), /* The man who smokes kools is in the house next to the man who owns a horse */
 	member(house(_,_,orange_juice,_,lucky_strike), Houses), /* The Lucky Strike smoker drinks orange juice */
