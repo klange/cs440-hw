@@ -1,0 +1,3 @@
+Solve by querying "solve(Houses, Who_owns_the_zebra, Who_drinks_water)."; Houess will contain the full set of solutions, and the latter two will specifically list the nationalities of the requested mystery persons (the owner of the zebra, and the drinker of water).
+
+Alternatively, a script (`./run.sh`) is provided that will do this for you and simply print the results.
