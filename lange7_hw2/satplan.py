@@ -45,7 +45,7 @@ def PossMove(block, source, target, state):
 	if target == 'T':
 		return Clear(block, state) and On(block, source, state)
 	if source == 'T':
-		return Clear(block, state) and OnTable(block, state)
+		return Clear(block, state) and OnTable(block, state) and Clear(target, state)
 	return Clear(block, state) and Clear(target, state) and On(block, source, state)
 
 def Move(block, source, target, state):
@@ -123,7 +123,7 @@ def RecurseToFind(depthCounter, start, goal):
 			moveableBlocks.append(i[1])
 	for i in moveableBlocks:
 		targets = moveableBlocks[:]
-		targets.append('T')
+		targets.insert(0,'T')
 		targets.remove(i)
 		for j in targets:
 			if PossMove(i, Below(i, start), j, start):
