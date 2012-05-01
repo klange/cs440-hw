@@ -1,2 +1,14 @@
 Run as `python astar.py sample.txt` or similar.
 Prints output as requested by the homework.
+
+The sample map from the homework is provided as `sample.map`, so you can expect operation as follows:
+
+    $ python astar.py sample.txt
+    4
+    (1,1)
+    (1,2)
+    (1,3)
+    (2,3)
+    (3,3)
+
+- Kevin Lange
